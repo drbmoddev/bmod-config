@@ -1,0 +1,22 @@
+# Keeps the free Supabase project awake: one tiny request to the database every day.
+# Nothing to fill in. The key below is the PUBLISHABLE key (the same one that is inside the app), it is meant to be public.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: '17 6 * * *'      # every day at 06:17 UTC
+  workflow_dispatch:           # also lets you press "Run workflow" by hand to test it
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask the database for the leaderboard
+        run: |
+          curl --fail --silent --show-error --max-time 30 \
+            -X POST "https://pfoppsupqenlpfejnwyr.supabase.co/rest/v1/rpc/get_leaderboard" \
+            -H "apikey: sb_publishable_Wl9ytHJsSgjS8YLD1hAhzg_iTk_KeL2" \
+            -H "Content-Type: application/json" \
+            -d '{"p_level":"prep"}' \
+            -o /dev/null
+          echo "Database answered."
